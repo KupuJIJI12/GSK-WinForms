@@ -43,6 +43,7 @@ namespace WinFormsApp1
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(179, 23);
             this.numericUpDown1.TabIndex = 0;
+            this.numericUpDown1.Value = 5;
             // 
             // label1
             // 

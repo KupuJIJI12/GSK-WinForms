@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace WinFormsApp1
 {
@@ -46,7 +47,9 @@ namespace WinFormsApp1
             this.pictureBox1.Size = new System.Drawing.Size(700, 285);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.BackColor = Color.White;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_Click);
+            this.pictureBox1.MouseWheel += new MouseEventHandler(MouseEventHandler);
             // 
             // comboBox3
             // 
@@ -59,12 +62,15 @@ namespace WinFormsApp1
             // comboBox4
             // 
             this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Items.AddRange(new object[] {
+                "Поворот",
+                "Масштаб"
+            });
             this.comboBox4.Location = new System.Drawing.Point(306, 12);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(121, 23);
             this.comboBox4.TabIndex = 5;
-            // 
-            // comboBox5
+            this.comboBox4.SelectedIndexChanged += new System.EventHandler(this.comboBox4_SelectedIndexChanged);
             // 
             this.comboBox5.FormattingEnabled = true;
             this.comboBox5.Items.AddRange(new object[] {

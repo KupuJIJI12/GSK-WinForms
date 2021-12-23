@@ -2,38 +2,71 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using WinFormsApp1.Abstractions;
 
 namespace WinFormsApp1.Shapes
 {
     public class Star : Shape
     {
-        private readonly int _sidesCount;
+        private readonly int _peaksCount;
+        public double Radius { get; set; } = 50;
+        public double Angle { get; set; } = 0;
+        public Point Center { get; set; }
 
-        public Star(Pen pen, Graphics graphics, int sidesCount) : base(pen, graphics)
+        public Star(Pen pen, Graphics graphics, int peaksCount) : base(pen, graphics)
         {
-            _sidesCount = sidesCount;
+            _peaksCount = peaksCount;
         }
 
-        public override void DrawShape(List<Point> points)
+        public override void Draw(List<Point> points)
         {
-            var pointsF = GetNeededPoints(points[0]).ToArray();
- 
+            Center = points[0];
+            var pointsF = GetNeededPoints(Center).ToArray();
+
+            Points.AddRange(pointsF);
+            
             Graphics.DrawLines(Pen, pointsF);
+        }
+
+        public override void Rotate(double angle)
+        {
+            Angle += angle;
+            var pointsF = GetNeededPoints(Center).ToArray();
+
+            Points = new List<PointF>(pointsF);
+
+            Graphics.DrawLines(Pen, pointsF);
+        }
+
+        public override void ChangeScale(double radius)
+        {
+            Radius += radius;
+            var pointsF = GetNeededPoints(Center).ToArray();
+
+            Points = new List<PointF>(pointsF);
+
+            Graphics.DrawLines(Pen, pointsF);;
+        }
+
+        public override void ReDraw()
+        {
+            Graphics.DrawLines(Pen, Points.ToArray());
         }
 
         private IEnumerable<PointF> GetNeededPoints(Point center)
         { 
-            double R = 25, r = 50;   // радиусы
-            double alpha = 0;        // поворот
-            double x0 = center.X, y0 = center.Y; // центр
- 
-            var points = new PointF[2 * _sidesCount + 1];
-            double a = alpha, da = Math.PI / _sidesCount, l;
-            for (int k = 0; k < 2 * _sidesCount + 1; k++)
+            var r = Radius / 2.0;
+            var angle = Angle;
+            var x0 = center.X;
+            var y0 = center.Y;
+            var points = new PointF[2 * _peaksCount + 1];
+            var da = Math.PI / _peaksCount;
+
+            for (var i = 0; i < 2 * _peaksCount + 1; i++)
             {
-                l = k % 2 == 0 ? r : R;
-                points[k] = new PointF((float)(x0 + l * Math.Cos(a)), (float)(y0 + l * Math.Sin(a)));
-                a += da;
+                var length = i % 2 == 0 ? Radius : r;
+                points[i] = new PointF((float)(x0 + length * Math.Cos(angle)), (float)(y0 + length * Math.Sin(angle)));
+                angle += da;
             }
 
             return points;

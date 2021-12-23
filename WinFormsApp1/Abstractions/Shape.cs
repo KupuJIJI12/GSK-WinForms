@@ -1,20 +1,26 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-namespace WinFormsApp1
+namespace WinFormsApp1.Abstractions
 {
     public abstract class Shape
     {
-        protected readonly Pen Pen;
+        public  Pen Pen { get; set; }
         protected readonly Graphics Graphics;
+        public List<PointF> Points { get; set; }
 
         protected Shape(Pen pen, Graphics graphics)
         {
             Graphics = graphics;
             Pen = pen;
+            Points = new List<PointF>();
         }
 
-        public abstract void DrawShape(List<Point> points);
+        public abstract void Draw(List<Point> points);
+        public abstract void ReDraw();
+
+        public virtual void Rotate(double angle){}
+        public virtual void ChangeScale(double scale){}
         
         protected static double Factorial(int a)
         {

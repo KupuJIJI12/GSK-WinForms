@@ -20,6 +20,7 @@ namespace WinFormsApp1.Abstractions
         public abstract void ReDraw();
 
         public virtual void Rotate(double angle){}
+        public virtual void ChangeScale(double scale){}
         
         protected static double Factorial(int a)
         {

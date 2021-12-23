@@ -9,7 +9,7 @@ namespace WinFormsApp1.Shapes
     public class Star : Shape
     {
         private readonly int _peaksCount;
-        public int Radius { get; set; } = 50;
+        public double Radius { get; set; } = 50;
         public double Angle { get; set; } = 0;
         public Point Center { get; set; }
 
@@ -30,10 +30,22 @@ namespace WinFormsApp1.Shapes
 
         public override void Rotate(double angle)
         {
-            Angle = angle;
+            Angle += angle;
             var pointsF = GetNeededPoints(Center).ToArray();
 
+            Points = new List<PointF>(pointsF);
+
             Graphics.DrawLines(Pen, pointsF);
+        }
+
+        public override void ChangeScale(double radius)
+        {
+            Radius += radius;
+            var pointsF = GetNeededPoints(Center).ToArray();
+
+            Points = new List<PointF>(pointsF);
+
+            Graphics.DrawLines(Pen, pointsF);;
         }
 
         public override void ReDraw()

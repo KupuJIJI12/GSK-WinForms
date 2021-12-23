@@ -62,12 +62,15 @@ namespace WinFormsApp1
             // comboBox4
             // 
             this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Items.AddRange(new object[] {
+                "Поворот",
+                "Масштаб"
+            });
             this.comboBox4.Location = new System.Drawing.Point(306, 12);
             this.comboBox4.Name = "comboBox4";
             this.comboBox4.Size = new System.Drawing.Size(121, 23);
             this.comboBox4.TabIndex = 5;
-            // 
-            // comboBox5
+            this.comboBox4.SelectedIndexChanged += new System.EventHandler(this.comboBox4_SelectedIndexChanged);
             // 
             this.comboBox5.FormattingEnabled = true;
             this.comboBox5.Items.AddRange(new object[] {

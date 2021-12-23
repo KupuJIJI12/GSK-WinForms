@@ -9,26 +9,42 @@ namespace WinFormsApp1.Shapes
     public class Star : Shape
     {
         private readonly int _peaksCount;
-        private int _radius;
-        private double _angle;
+        public int Radius { get; set; } = 50;
+        public double Angle { get; set; } = 0;
+        public Point Center { get; set; }
 
-        public Star(Pen pen, Graphics graphics, int peaksCount, double angle = 0, int radius = 50) : base(pen, graphics)
+        public Star(Pen pen, Graphics graphics, int peaksCount) : base(pen, graphics)
         {
             _peaksCount = peaksCount;
-            _radius = radius;
-            _angle = angle;
         }
 
-        public override void DrawShape(List<Point> points)
+        public override void Draw(List<Point> points)
         {
-            var pointsF = GetNeededPoints(points[0]).ToArray();
- 
+            Center = points[0];
+            var pointsF = GetNeededPoints(Center).ToArray();
+
+            Points.AddRange(pointsF);
+            
             Graphics.DrawLines(Pen, pointsF);
+        }
+
+        public override void Rotate(double angle)
+        {
+            Angle = angle;
+            var pointsF = GetNeededPoints(Center).ToArray();
+
+            Graphics.DrawLines(Pen, pointsF);
+        }
+
+        public override void ReDraw()
+        {
+            Graphics.DrawLines(Pen, Points.ToArray());
         }
 
         private IEnumerable<PointF> GetNeededPoints(Point center)
         { 
-            var r = _radius / 2.0; 
+            var r = Radius / 2.0;
+            var angle = Angle;
             var x0 = center.X;
             var y0 = center.Y;
             var points = new PointF[2 * _peaksCount + 1];
@@ -36,9 +52,9 @@ namespace WinFormsApp1.Shapes
 
             for (var i = 0; i < 2 * _peaksCount + 1; i++)
             {
-                var length = i % 2 == 0 ? _radius : r;
-                points[i] = new PointF((float)(x0 + length * Math.Cos(_angle)), (float)(y0 + length * Math.Sin(_angle)));
-                _angle += da;
+                var length = i % 2 == 0 ? Radius : r;
+                points[i] = new PointF((float)(x0 + length * Math.Cos(angle)), (float)(y0 + length * Math.Sin(angle)));
+                angle += da;
             }
 
             return points;

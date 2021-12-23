@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace WinFormsApp1
 {
@@ -46,7 +47,9 @@ namespace WinFormsApp1
             this.pictureBox1.Size = new System.Drawing.Size(700, 285);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.BackColor = Color.White;
             this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_Click);
+            this.pictureBox1.MouseWheel += new MouseEventHandler(MouseEventHandler);
             // 
             // comboBox3
             // 

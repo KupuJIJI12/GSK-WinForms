@@ -11,11 +11,16 @@ namespace WinFormsApp1.Shapes
         public BezierCurve(Pen pen, Graphics graphics) : base(pen, graphics)
         { }
 
-        public override void DrawShape(List<Point> points)
+        public override void Draw(List<Point> points)
         {
             var neededPoints = GetCalculatedPoints(points).ToArray();
-            
+
             Graphics.DrawLines(Pen, neededPoints);
+        }
+
+        public override void ReDraw()
+        {
+            
         }
 
         private static IEnumerable<PointF> GetCalculatedPoints(IReadOnlyList<Point> points)

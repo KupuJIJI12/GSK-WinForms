@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using WinFormsApp1.Abstractions;
 using WinFormsApp1.Shapes;
 
 namespace WinFormsApp1
@@ -9,8 +10,10 @@ namespace WinFormsApp1
     public partial class Form1 : Form
     {
         private readonly Graphics _graphics;
-        private List<Point> _points;
         private readonly Shape _bezierCurve;
+        private readonly List<Point> _points;
+        private readonly Dictionary<int, Shape> _shapes;
+        
         private Shape _star;
         private string _selectedShape;
 
@@ -21,6 +24,7 @@ namespace WinFormsApp1
             
             _points = new List<Point>();
             _bezierCurve = new BezierCurve(new Pen(Color.Black), _graphics);
+            _shapes = new Dictionary<int, Shape>();
         }
 
         private void pictureBox1_Click(object sender, MouseEventArgs e)
@@ -75,7 +79,7 @@ namespace WinFormsApp1
                 {
                     //а с этим вдвойне -_-
                     count = int.Parse((starForm.Controls[2] as NumericUpDown).Text);
-                    _star = new Star(new Pen(Color.Chocolate), _graphics, count);
+                    _star = new Star(new Pen(Color.Chocolate), _graphics, count, 0, 50);
                     
                     starForm.Close();
                 };

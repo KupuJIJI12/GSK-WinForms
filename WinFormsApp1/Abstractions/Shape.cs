@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-namespace WinFormsApp1
+namespace WinFormsApp1.Abstractions
 {
     public abstract class Shape
     {

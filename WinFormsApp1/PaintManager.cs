@@ -68,6 +68,28 @@ namespace WinFormsApp1
                 shape.ReDraw();
             }
         }
+        
+        private static void Sort(IList<PointF> a)
+        {
+            var i = 1;
+            while (i < a.Count)
+            {
+                if (i == 0 || a[i - 1].X <= a[i].X)
+                {
+                    i++;
+                }
+                else
+                {
+                    (a[i], a[i - 1]) = (a[i - 1], a[i]);
+                    i--;
+                }
+            }
+        }
+
+        private static bool LineIntersected(float yI, float yK, float yLine)
+        {
+            return (yI < yLine && yK >= yLine) || (yI >= yLine && yK < yLine);
+        }
 
         public void Clear()
         {
@@ -121,6 +143,10 @@ namespace WinFormsApp1
                     }
                 }
             }
+            else if (SelectedShape == "Линия")
+            {
+                
+            }
         }
 
         public void ExecuteShapeOperation(MouseEventArgs e)
@@ -151,6 +177,26 @@ namespace WinFormsApp1
                     }
                     break;
                 }
+                case "Зеркало":
+                {
+                    if (_selectedShape is Star star)
+                    {
+                        star.Points = star.Points
+                            .Select(p =>
+                            {
+                                var diff = e.X - p.X;
+                                p.X = e.X + diff;
+                                diff = e.Y - p.Y;
+                                p.Y = e.Y + diff;
+                                
+                                return p;
+                            })
+                            .ToList();
+                        
+                        ReDrawExitingShapes();
+                    }
+                    break;
+                }
             }
         }
         
@@ -171,5 +217,54 @@ namespace WinFormsApp1
                 
             starForm.ShowDialog();
         }
+
+        public void PaintOverShape(Brush brush)
+        {
+            var points = _selectedShape.Points;
+            var ys = points
+                .Select(p => p.Y)
+                .ToArray();
+            
+            var pointsCount = points.Count;
+            var yMin = ys.Min();
+            var yMax = ys.Max();
+
+            for (var y = yMin; y < yMax; y++)
+            {
+                var xb = new List<PointF>();
+                for (var i = 0; i < pointsCount; i++)
+                {
+                    var k = i < points.Count - 1 ? i + 1 : 0;
+                    if (LineIntersected(points[i].Y, points[k].Y, y))
+                    {
+                        xb.Add(new PointF
+                        {
+                            X = ((points[k].X - points[i].X) *
+                                    y + (points[i].X * points[k].Y - points[k].X * points[i].Y))
+                                / (points[k].Y - points[i].Y),
+                            Y = y
+                        });
+                    }
+                }
+
+                Sort(xb);
+                for (var i = 0; i < xb.Count; i += 2)
+                {
+                    _graphics.DrawLine(new Pen(brush), xb[i], xb[i + 1]);
+                }
+
+                xb.Clear();
+            }
+        }
+
+        /*public void MoveShape(int x, int y)
+        {
+            if (_selectedShape is not null)
+            {
+                _shapes.Remove(_selectedShape);
+                ReDrawExitingShapes();
+                _selectedShape.Draw(new List<Point>{new(x, y)});
+            }
+        }*/
     }
 }

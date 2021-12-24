@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace WinFormsApp1
@@ -47,6 +48,26 @@ namespace WinFormsApp1
         {
             var comboBox = sender as ComboBox;
             _paintManager.SelectedOperation = comboBox.Text;
+        }
+
+        private void colorDialog_Click(object sender, EventArgs e)
+        {
+            colorDialog1.ShowDialog();
+            colorDialog.BackColor = colorDialog1.Color;
+            colorDialog1.Dispose();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            _paintManager.PaintOverShape(new SolidBrush(colorDialog.BackColor));
+        }
+
+        private void PictureBoxMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                //_paintManager.MoveShape(e.X, e.Y);
+            }
         }
     }
 }

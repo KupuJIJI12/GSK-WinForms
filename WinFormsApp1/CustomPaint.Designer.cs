@@ -80,7 +80,6 @@ namespace WinFormsApp1
             this.comboBox5.Items.AddRange(new object[] {
             "Безье",
             "Звезда",
-            "Линия",
             "Фигура2"});
             this.comboBox5.Location = new System.Drawing.Point(12, 12);
             this.comboBox5.Name = "comboBox5";

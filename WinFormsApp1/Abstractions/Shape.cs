@@ -5,8 +5,10 @@ namespace WinFormsApp1.Abstractions
 {
     public abstract class Shape
     {
-        public  Pen Pen { get; set; }
+        public Pen Pen { get; set; }
         protected readonly Graphics Graphics;
+        
+        public bool IsPainted;
         public List<PointF> Points { get; set; }
 
         protected Shape(Pen pen, Graphics graphics)
@@ -14,6 +16,7 @@ namespace WinFormsApp1.Abstractions
             Graphics = graphics;
             Pen = pen;
             Points = new List<PointF>();
+            IsPainted = false;
         }
 
         public abstract void Draw(List<Point> points);

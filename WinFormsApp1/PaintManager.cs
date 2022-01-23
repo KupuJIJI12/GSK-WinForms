@@ -44,14 +44,21 @@ namespace WinFormsApp1
 
                 if (minX <= point.X && maxX >= point.X && minY <= point.Y && maxY >= point.Y)
                 {
-                    if(_selectedShape is not null)
-                        _selectedShape.Pen = Pens.Chocolate;
-                            
-                    value.Pen = Pens.DodgerBlue;
+                    if (_selectedShape == value) return true;
+                    
+                    if (_selectedShape is not null)
+                    {
+                        if(!_selectedShape.IsPainted)
+                            _selectedShape.Pen = Pens.Chocolate;
+                    }
+                    
+                    if(!value.IsPainted)
+                        value.Pen = Pens.DodgerBlue;
+                    
                     _selectedShape = value;
-                            
+
                     ReDrawExitingShapes();
-                            
+
                     return true;
                 }
             }
@@ -66,6 +73,10 @@ namespace WinFormsApp1
             foreach (var shape in _shapes)
             {
                 shape.ReDraw();
+                if (shape.IsPainted)
+                {
+                    PaintOverShape(shape.Pen.Brush, shape);
+                }
             }
         }
         
@@ -96,6 +107,7 @@ namespace WinFormsApp1
             _graphics.Clear(Color.White);
             _shapes.Clear();
             _points.Clear();
+            _selectedShape = null;
         }
 
         public void DrawShape(MouseEventArgs e)
@@ -143,60 +155,79 @@ namespace WinFormsApp1
                     }
                 }
             }
-            else if (SelectedShape == "Линия")
+            else if (SelectedShape == "Фигура2")
             {
+                _points.Add(new Point(e.X, e.Y));
                 
+                if (_shapes.Count != 0)
+                {
+                    var b = SelectShape(new Point(e.X, e.Y));
+
+                    if (b)
+                    {
+                        return;
+                    }
+                }
+                
+                var figure = new Figure2(Pens.Green, _graphics, 50);
+
+                figure.Draw(_points);
+                
+                _shapes.Add(figure);
+                _points.Clear();
             }
         }
 
         public void ExecuteShapeOperation(MouseEventArgs e)
         {
+            if (_selectedShape is null) return;
+
             switch (SelectedOperation)
             {
                 case "Поворот":
                 {
-                    if (_selectedShape is Star star)
-                    {
-                        var angle = e.Delta / 40.0;
+                    var angle = e.Delta / 40.0;
 
-                        _shapes.Remove(_selectedShape);
-                        ReDrawExitingShapes();
-                        star.Rotate(angle);
-                    }
+                    _shapes.Remove(_selectedShape);
+                    ReDrawExitingShapes();
+                    _selectedShape.Rotate(angle);
+
                     break;
                 }
                 case "Масштаб":
                 {
-                    if (_selectedShape is Star star)
-                    {
-                        var radius = e.Delta > 0 ? 10.0 : -10.0;
+                    var radius = e.Delta > 0 ? 10.0 : -10.0;
 
-                        _shapes.Remove(_selectedShape);
-                        ReDrawExitingShapes();
-                        star.ChangeScale(radius);
-                    }
+                    _shapes.Remove(_selectedShape);
+                    ReDrawExitingShapes();
+                    _selectedShape.ChangeScale(radius);
+
                     break;
                 }
                 case "Зеркало":
                 {
-                    if (_selectedShape is Star star)
-                    {
-                        star.Points = star.Points
-                            .Select(p =>
-                            {
-                                var diff = e.X - p.X;
-                                p.X = e.X + diff;
-                                diff = e.Y - p.Y;
-                                p.Y = e.Y + diff;
-                                
-                                return p;
-                            })
-                            .ToList();
-                        
-                        ReDrawExitingShapes();
-                    }
+                    _selectedShape.Points = _selectedShape.Points
+                        .Select(p =>
+                        {
+                            var diff = e.X - p.X;
+                            p.X = e.X + diff;
+                            diff = e.Y - p.Y;
+                            p.Y = e.Y + diff;
+
+                            return p;
+                        })
+                        .ToList();
+
+                    ReDrawExitingShapes();
+
                     break;
                 }
+            }
+            
+            _shapes.Add(_selectedShape);
+            if (_selectedShape.IsPainted)
+            {
+                PaintOverShape(_selectedShape.Pen.Brush, _selectedShape);
             }
         }
         
@@ -218,9 +249,13 @@ namespace WinFormsApp1
             starForm.ShowDialog();
         }
 
-        public void PaintOverShape(Brush brush)
+        public void PaintOverShape(Brush brush, Shape shape = default)
         {
-            var points = _selectedShape.Points;
+            shape ??= _selectedShape;
+            shape.IsPainted = true;
+            shape.Pen = new Pen(brush);
+            
+            var points = shape.Points;
             var ys = points
                 .Select(p => p.Y)
                 .ToArray();
@@ -254,6 +289,7 @@ namespace WinFormsApp1
                 }
 
                 xb.Clear();
+                
             }
         }
 
